@@ -6,27 +6,38 @@ class NegociacaoController {
         // por isso preciso usar o bind
         let $ = document.querySelector.bind(document);
 
-        this._iputData = $('#data');
+        this._inputData = $('#data');
         this._inputQuantidade = $('#quantidade');
         this._inputValor = $('#valor');
+        this._listaNegociacoes = new ListaNegociacoes();
     }
 
     adiciona(event) {
         event.preventDefault();
 
-        //new Date(this._iputData.value.replace(/-/g,',')) usando expressao regulares
 
 
-        let data = new Date(...
-            this._iputData.value
-                .split('-')
-                .map((item, index) => item - index % 2)
-        );
 
-        let negociacao = new  Negociacao(data, this._inputQuantidade.value, this._inputValor.value)
+        this._listaNegociacoes.adiciona(this._criaNegociacao());
+        this._limpaFormulario();
 
-        console.log(negociacao);
+        console.log(this._listaNegociacoes.negociacoes);
 
+
+    }
+    //a convenção é que apenas a classe pode chamar propriedade e os métodos sinalizados com '_'
+    _criaNegociacao() {
+        return new  Negociacao(
+            DateHelper.textoParaData(this._inputData.value),
+            this._inputQuantidade.value,
+            this._inputValor.value);
+    }
+
+    _limpaFormulario() {
+        this._inputData.value = '';
+        this._inputQuantidade.value = 1;
+        this._inputValor.value = 0.0;
+        this._inputData.focus();
 
     }
 }
