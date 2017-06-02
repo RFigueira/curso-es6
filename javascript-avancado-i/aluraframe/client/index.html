@@ -56,5 +56,24 @@
     <script>
         let negociacaoController = new NegociacaoController();
     </script>
+    <script>
+        let lista = new Proxy(new ListaNegociacoes(), {
+            get(target, prop, receiver) {
+                //propriedades que quero interceptar e se eh funcao
+                if(['adiciona', 'esvazia'].includes(prop) && typeof(target[prop]) == typeof(Function)){
+
+                    //Substituindo a funcao, so que no proxy
+                    return function () {
+                        console.log(`interceptando ${prop}`);
+
+                        //aplica os valores na funcao modificada
+                        Reflect.apply(target[prop], target, arguments);
+                    }
+                }
+                return Reflect.get(target, prop, receiver);
+            }
+        });
+        lista.adiciona(new Negociacao(new Date(), 1, 100));
+    </script>
 </body>
 </html>
